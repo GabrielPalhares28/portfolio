@@ -249,8 +249,8 @@ export const About: React.FC = () => {
                 fontSize: "1.05rem",
               }}
             >
-              Atualmente curso <strong>Análise e Desenvolvimento de Sistemas</strong> na
-              Unicesumar e atuo como freelancer na Workana, onde desenvolvo projetos completos
+              Formado em <strong>Análise e Desenvolvimento de Sistemas</strong> na
+              Unicesumar e atuo como Desenvolvedor Full Stack, onde desenvolvo projetos completos
               do front ao back-end.
             </Typography>
 
