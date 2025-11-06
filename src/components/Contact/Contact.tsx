@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -22,7 +22,7 @@ import {
   Send,
   CheckCircle,
 } from "@mui/icons-material";
-import emailjs from "@emailjs/browser";
+import axios from "axios";
 
 const contactMethods = [
   {
@@ -57,7 +57,6 @@ const contactMethods = [
 
 export const Contact: React.FC = () => {
   const theme = useTheme();
-  const form = useRef<HTMLFormElement>(null);
   
   const [formData, setFormData] = useState({
     user_name: "",
@@ -131,32 +130,51 @@ export const Contact: React.FC = () => {
     setLoading(true);
 
     try {
-      // IMPORTANTE: Configure suas credenciais do EmailJS
-      // 1. Crie conta em https://www.emailjs.com/
-      // 2. Substitua os valores abaixo pelos seus
-      await emailjs.sendForm(
-        "YOUR_SERVICE_ID", // Ex: service_abc1234
-        "YOUR_TEMPLATE_ID", // Ex: template_xyz5678
-        form.current!,
-        "YOUR_PUBLIC_KEY" // Ex: abcd1234EFGH5678
-      );
+      // URL da API (funciona automaticamente em local e production)
+      const apiUrl = import.meta.env.VITE_API_URL || '';
+      
+      // Adaptar os nomes dos campos para a API
+      const payload = {
+        name: formData.user_name,
+        email: formData.user_email,
+        subject: "Nova mensagem do portfólio",
+        message: formData.message,
+      };
+
+      const response = await axios.post(`${apiUrl}/api/send-email`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.success) {
+        setSnackbar({
+          open: true,
+          message: "Mensagem enviada com sucesso! 🎉",
+          severity: "success",
+        });
+
+        // Limpa o formulário
+        setFormData({
+          user_name: "",
+          user_email: "",
+          message: "",
+        });
+      }
+    } catch (error: any) {
+      console.error('Erro ao enviar mensagem:', error);
+
+      let errorMessage = "Erro ao enviar mensagem. Tente novamente! 😕";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 429) {
+        errorMessage = "Muitas tentativas. Aguarde um momento e tente novamente.";
+      }
 
       setSnackbar({
         open: true,
-        message: "Mensagem enviada com sucesso! 🎉",
-        severity: "success",
-      });
-
-      // Limpa o formulário
-      setFormData({
-        user_name: "",
-        user_email: "",
-        message: "",
-      });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: "Erro ao enviar mensagem. Tente novamente! 😕",
+        message: errorMessage,
         severity: "error",
       });
     } finally {
@@ -382,7 +400,6 @@ export const Contact: React.FC = () => {
             >
               <Box
                 component="form"
-                ref={form}
                 onSubmit={sendEmail}
                 sx={{
                   p: { xs: 3, md: 4 },
