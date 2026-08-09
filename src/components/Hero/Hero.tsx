@@ -8,13 +8,20 @@ import {
   useTheme,
   alpha,
 } from "@mui/material";
+import { Download, KeyboardArrowDown } from "@mui/icons-material";
+import { DecorativeBlob } from "../common/DecorativeBlob";
 import {
-  GitHub,
-  LinkedIn,
-  Email,
-  Download,
-  KeyboardArrowDown,
-} from "@mui/icons-material";
+  SURFACE_COLORS,
+  accentIconButton,
+  pulse,
+  brandGradientText,
+  fadeIn,
+  gradientButton,
+  headingGradientText,
+  sectionGradient,
+} from "../../theme/styles";
+import { heroSocialLinks } from "../../data/social";
+import { scrollToSection } from "../../utils/scroll";
 
 export const Hero: React.FC = () => {
   const theme = useTheme();
@@ -33,21 +40,6 @@ export const Hero: React.FC = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
-  };
-
-  const socialLinks = [
-    { icon: <GitHub />, href: "https://github.com/GabrielPalhares28", label: "GitHub" },
-    { icon: <LinkedIn />, href: "https://linkedin.com/in/gabriel-palhares-94bb30204", label: "LinkedIn" },
-    { icon: <Email />, href: "gabrielpalhares764@gmail.com", label: "Email" },
-  ];
 
   return (
     <Box
@@ -58,28 +50,33 @@ export const Hero: React.FC = () => {
         alignItems: "center",
         position: "relative",
         overflow: "hidden",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)"
-            : "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)",
+        background: sectionGradient(theme, {
+          angle: 135,
+          dark: [
+            SURFACE_COLORS.darkDeep,
+            SURFACE_COLORS.darkSoft,
+            SURFACE_COLORS.darkDeep,
+          ],
+          light: [
+            SURFACE_COLORS.lightSoft,
+            SURFACE_COLORS.lightMuted,
+            SURFACE_COLORS.lightSoft,
+          ],
+        }),
       }}
     >
       {/* Background Animated Blobs */}
-      <Box
+      <DecorativeBlob
+        size="500px"
+        darkColor="59, 130, 246"
+        lightColor="37, 99, 235"
+        darkOpacity={0.15}
+        lightOpacity={0.1}
         sx={{
-          position: "absolute",
-          width: "500px",
-          height: "500px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)",
-          borderRadius: "50%",
           top: "10%",
           left: "5%",
           transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
           transition: "transform 0.3s ease-out",
-          filter: "blur(60px)",
           animation: "float 20s ease-in-out infinite",
           "@keyframes float": {
             "0%, 100%": { transform: "translate(0, 0)" },
@@ -87,21 +84,17 @@ export const Hero: React.FC = () => {
           },
         }}
       />
-      <Box
+      <DecorativeBlob
+        size="400px"
+        darkColor="139, 92, 246"
+        lightColor="124, 58, 237"
+        darkOpacity={0.15}
+        lightOpacity={0.1}
         sx={{
-          position: "absolute",
-          width: "400px",
-          height: "400px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%)",
-          borderRadius: "50%",
           bottom: "15%",
           right: "10%",
           transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`,
           transition: "transform 0.3s ease-out",
-          filter: "blur(60px)",
           animation: "float 15s ease-in-out infinite reverse",
         }}
       />
@@ -140,17 +133,10 @@ export const Hero: React.FC = () => {
               gap: 1,
               px: 2,
               py: 0.75,
-              background:
-                theme.palette.mode === "dark"
-                  ? alpha(theme.palette.primary.main, 0.1)
-                  : alpha(theme.palette.primary.main, 0.1),
+              background: alpha(theme.palette.primary.main, 0.1),
               border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
               borderRadius: "50px",
-              animation: "fadeInUp 0.6s ease-out",
-              "@keyframes fadeInUp": {
-                from: { opacity: 0, transform: "translateY(20px)" },
-                to: { opacity: 1, transform: "translateY(0)" },
-              },
+              ...fadeIn({ distance: 20 }),
             }}
           >
             <Box
@@ -159,11 +145,7 @@ export const Hero: React.FC = () => {
                 height: 8,
                 borderRadius: "50%",
                 background: "#10b981",
-                animation: "pulse 2s ease-in-out infinite",
-                "@keyframes pulse": {
-                  "0%, 100%": { opacity: 1 },
-                  "50%": { opacity: 0.5 },
-                },
+                ...pulse(),
               }}
             />
             <Typography
@@ -186,7 +168,7 @@ export const Hero: React.FC = () => {
                 color: theme.palette.primary.main,
                 fontWeight: 600,
                 mb: 1,
-                animation: "fadeInUp 0.6s ease-out 0.1s both",
+                ...fadeIn({ distance: 20, delay: 0.1 }),
               }}
             >
               Olá, eu sou
@@ -198,13 +180,8 @@ export const Hero: React.FC = () => {
                 fontWeight: 800,
                 lineHeight: 1.1,
                 mb: 2,
-                background:
-                  theme.palette.mode === "dark"
-                    ? "linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)"
-                    : "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                animation: "fadeInUp 0.6s ease-out 0.2s both",
+                ...headingGradientText(theme),
+                ...fadeIn({ distance: 20, delay: 0.2 }),
               }}
             >
               Gabriel Palhares
@@ -214,10 +191,8 @@ export const Hero: React.FC = () => {
               sx={{
                 fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3rem" },
                 fontWeight: 700,
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                animation: "fadeInUp 0.6s ease-out 0.3s both",
+                ...brandGradientText,
+                ...fadeIn({ distance: 20, delay: 0.3 }),
               }}
             >
               Desenvolvedor Full Stack
@@ -233,7 +208,7 @@ export const Hero: React.FC = () => {
               fontSize: { xs: "1rem", md: "1.25rem" },
               fontWeight: 400,
               lineHeight: 1.6,
-              animation: "fadeInUp 0.6s ease-out 0.4s both",
+              ...fadeIn({ distance: 20, delay: 0.4 }),
             }}
           >
             Construindo experiências digitais incríveis com código limpo e design
@@ -247,7 +222,7 @@ export const Hero: React.FC = () => {
               flexDirection: { xs: "column", sm: "row" },
               gap: 2,
               mt: 2,
-              animation: "fadeInUp 0.6s ease-out 0.5s both",
+              ...fadeIn({ distance: 20, delay: 0.5 }),
             }}
           >
             <Button
@@ -258,16 +233,7 @@ export const Hero: React.FC = () => {
                 px: 4,
                 py: 1.5,
                 fontSize: "1rem",
-                fontWeight: 600,
-                borderRadius: 2,
-                textTransform: "none",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 6px 25px rgba(102, 126, 234, 0.6)",
-                },
+                ...gradientButton,
               }}
             >
               Ver Projetos
@@ -310,28 +276,20 @@ export const Hero: React.FC = () => {
               display: "flex",
               gap: 2,
               mt: 2,
-              animation: "fadeInUp 0.6s ease-out 0.6s both",
+              ...fadeIn({ distance: 20, delay: 0.6 }),
             }}
           >
-            {socialLinks.map((social, index) => (
+            {heroSocialLinks.map((social) => (
               <IconButton
-                key={index}
+                key={social.label}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                sx={{
-                  background:
-                    theme.palette.mode === "dark"
-                      ? alpha(theme.palette.primary.main, 0.1)
-                      : alpha(theme.palette.primary.main, 0.05),
-                  border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                  transition: "all 0.3s ease",
-                  "&:hover": {
-                    background: alpha(theme.palette.primary.main, 0.2),
-                    transform: "translateY(-3px)",
-                    borderColor: theme.palette.primary.main,
-                  },
-                }}
+                sx={accentIconButton(
+                  theme.palette.primary.main,
+                  theme.palette.mode,
+                  { idleLight: 0.05 }
+                )}
                 aria-label={social.label}
               >
                 {social.icon}

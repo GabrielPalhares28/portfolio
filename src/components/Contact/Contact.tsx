@@ -14,46 +14,19 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import {
-  Email,
-  GitHub,
-  LinkedIn,
-  WhatsApp,
-  Send,
-  CheckCircle,
-} from "@mui/icons-material";
+import { Send, CheckCircle } from "@mui/icons-material";
 import axios from "axios";
-
-const contactMethods = [
-  {
-    icon: <Email />,
-    title: "Email",
-    value: "gabriel@email.com",
-    href: "mailto:gabrielpalhares764@email.com",
-    color: "#ea4335",
-  },
-  {
-    icon: <LinkedIn />,
-    title: "LinkedIn",
-    value: "/gabriel-palhares",
-    href: "https://linkedin.com/in/gabriel-palhares-94bb30204",
-    color: "#0077b5",
-  },
-  {
-    icon: <GitHub />,
-    title: "GitHub",
-    value: "@GabrielPalhares28",
-    href: "https://github.com/GabrielPalhares28",
-    color: "#333",
-  },
-  {
-    icon: <WhatsApp />,
-    title: "WhatsApp",
-    value: "+55 (64) 99298-0763",
-    href: "https://wa.me/qr/JQBBZIED4SPBB1",
-    color: "#25d366",
-  },
-];
+import { DecorativeBlob } from "../common/DecorativeBlob";
+import { HighlightPanel } from "../common/HighlightPanel";
+import { SectionHeading } from "../common/SectionHeading";
+import { socialLinks } from "../../data/social";
+import {
+  SURFACE_COLORS,
+  fadeIn,
+  gradientButton,
+  sectionGradient,
+  surface,
+} from "../../theme/styles";
 
 export const Contact: React.FC = () => {
   const theme = useTheme();
@@ -161,15 +134,18 @@ export const Contact: React.FC = () => {
           message: "",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erro ao enviar mensagem:', error);
 
       let errorMessage = "Erro ao enviar mensagem. Tente novamente! 😕";
 
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.status === 429) {
-        errorMessage = "Muitas tentativas. Aguarde um momento e tente novamente.";
+      if (axios.isAxiosError<{ message?: string }>(error)) {
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response?.status === 429) {
+          errorMessage =
+            "Muitas tentativas. Aguarde um momento e tente novamente.";
+        }
       }
 
       setSnackbar({
@@ -192,87 +168,31 @@ export const Contact: React.FC = () => {
       sx={{
         py: { xs: 8, md: 12 },
         position: "relative",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)"
-            : "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+        background: sectionGradient(theme, {
+          dark: [SURFACE_COLORS.darkDeep, SURFACE_COLORS.darkSoft],
+          light: [SURFACE_COLORS.lightPlain, SURFACE_COLORS.lightSoft],
+        }),
       }}
     >
       {/* Background Decoration */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "30%",
-          left: "10%",
-          width: "300px",
-          height: "300px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(60px)",
-          pointerEvents: "none",
-        }}
+      <DecorativeBlob
+        size="300px"
+        color="139, 92, 246"
+        lightOpacity={0.05}
+        sx={{ top: "30%", left: "10%" }}
       />
 
       <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Typography
-            variant="overline"
-            sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 700,
-              fontSize: "0.875rem",
-              letterSpacing: "2px",
-              mb: 1,
-              display: "block",
-            }}
-          >
-            VAMOS CONVERSAR
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2rem", md: "3rem" },
-              fontWeight: 800,
-              mb: 2,
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)"
-                  : "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Entre em Contato
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.secondary,
-              maxWidth: "600px",
-              mx: "auto",
-              fontSize: { xs: "1rem", md: "1.125rem" },
-            }}
-          >
-            Tem um projeto em mente? Vamos construir algo incrível juntos!
-          </Typography>
-        </Box>
+        <SectionHeading
+          overline="VAMOS CONVERSAR"
+          title="Entre em Contato"
+          subtitle="Tem um projeto em mente? Vamos construir algo incrível juntos!"
+        />
 
         <Grid container spacing={6}>
           {/* Contact Methods */}
           <Grid item xs={12} md={5}>
-            <Box
-              sx={{
-                animation: "fadeInLeft 0.8s ease-out",
-                "@keyframes fadeInLeft": {
-                  from: { opacity: 0, transform: "translateX(-30px)" },
-                  to: { opacity: 1, transform: "translateX(0)" },
-                },
-              }}
-            >
+            <Box sx={fadeIn({ direction: "left", duration: 0.8 })}>
               <Typography
                 variant="h5"
                 sx={{
@@ -285,24 +205,16 @@ export const Contact: React.FC = () => {
               </Typography>
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                {contactMethods.map((method, index) => (
+                {socialLinks.map((method) => (
                   <Card
-                    key={index}
+                    key={method.label}
                     component="a"
                     href={method.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
                       textDecoration: "none",
-                      background:
-                        theme.palette.mode === "dark"
-                          ? "rgba(30, 41, 59, 0.5)"
-                          : "rgba(255, 255, 255, 0.9)",
-                      border: `1px solid ${
-                        theme.palette.mode === "dark"
-                          ? "rgba(148, 163, 184, 0.1)"
-                          : "rgba(203, 213, 225, 0.5)"
-                      }`,
+                      ...surface(theme),
                       transition: "all 0.3s ease",
                       "&:hover": {
                         transform: "translateX(8px)",
@@ -343,7 +255,7 @@ export const Contact: React.FC = () => {
                             mb: 0.25,
                           }}
                         >
-                          {method.title}
+                          {method.label}
                         </Typography>
                         <Typography
                           variant="body1"
@@ -352,7 +264,7 @@ export const Contact: React.FC = () => {
                             color: theme.palette.text.primary,
                           }}
                         >
-                          {method.value}
+                          {method.handle}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -361,18 +273,7 @@ export const Contact: React.FC = () => {
               </Box>
 
               {/* Additional Info */}
-              <Box
-                sx={{
-                  mt: 4,
-                  p: 3,
-                  borderRadius: 3,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? alpha(theme.palette.primary.main, 0.05)
-                      : alpha(theme.palette.primary.main, 0.03),
-                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                }}
-              >
+              <HighlightPanel sx={{ mt: 4, p: 3, borderRadius: 3 }}>
                 <Typography
                   variant="body2"
                   sx={{
@@ -383,20 +284,14 @@ export const Contact: React.FC = () => {
                   💡 <strong>Dica:</strong> Respondo mais rápido por WhatsApp e
                   LinkedIn!
                 </Typography>
-              </Box>
+              </HighlightPanel>
             </Box>
           </Grid>
 
           {/* Contact Form */}
           <Grid item xs={12} md={7}>
             <Box
-              sx={{
-                animation: "fadeInRight 0.8s ease-out 0.2s both",
-                "@keyframes fadeInRight": {
-                  from: { opacity: 0, transform: "translateX(30px)" },
-                  to: { opacity: 1, transform: "translateX(0)" },
-                },
-              }}
+              sx={fadeIn({ direction: "right", duration: 0.8, delay: 0.2 })}
             >
               <Box
                 component="form"
@@ -404,15 +299,7 @@ export const Contact: React.FC = () => {
                 sx={{
                   p: { xs: 3, md: 4 },
                   borderRadius: 4,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(30, 41, 59, 0.5)"
-                      : "rgba(255, 255, 255, 0.9)",
-                  border: `1px solid ${
-                    theme.palette.mode === "dark"
-                      ? "rgba(148, 163, 184, 0.1)"
-                      : "rgba(203, 213, 225, 0.5)"
-                  }`,
+                  ...surface(theme),
                   backdropFilter: "blur(10px)",
                 }}
               >
@@ -498,22 +385,11 @@ export const Contact: React.FC = () => {
                       )
                     }
                     sx={{
+                      ...gradientButton,
                       py: 1.5,
                       fontSize: "1rem",
-                      fontWeight: 600,
-                      textTransform: "none",
-                      borderRadius: 2,
-                      background:
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: "0 6px 25px rgba(102, 126, 234, 0.6)",
-                      },
                       "&:disabled": {
-                        background:
-                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        background: gradientButton.background,
                         opacity: 0.6,
                       },
                     }}

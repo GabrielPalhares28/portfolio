@@ -20,6 +20,18 @@ import {
   Favorite,
   Psychology,
 } from "@mui/icons-material";
+import { DecorativeBlob } from "../common/DecorativeBlob";
+import { SectionHeading } from "../common/SectionHeading";
+import { SubsectionHeading } from "../common/SubsectionHeading";
+import {
+  BRAND_GRADIENT,
+  SURFACE_COLORS,
+  fadeIn,
+  pulse,
+  sectionGradient,
+  subtleBorderColor,
+  surface,
+} from "../../theme/styles";
 
 const experiences = [
   {
@@ -77,63 +89,22 @@ export const About: React.FC = () => {
       sx={{
         py: { xs: 8, md: 12 },
         position: "relative",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)"
-            : "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+        background: sectionGradient(theme, {
+          dark: [SURFACE_COLORS.darkSoft, SURFACE_COLORS.darkDeep],
+          light: [SURFACE_COLORS.lightPlain, SURFACE_COLORS.lightSoft],
+        }),
       }}
     >
       {/* Background Decoration */}
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: "20%",
-          right: "5%",
-          width: "350px",
-          height: "350px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(102, 126, 234, 0.04) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(60px)",
-          pointerEvents: "none",
-        }}
+      <DecorativeBlob
+        size="350px"
+        darkOpacity={0.08}
+        lightOpacity={0.04}
+        sx={{ bottom: "20%", right: "5%" }}
       />
 
       <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Typography
-            variant="overline"
-            sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 700,
-              fontSize: "0.875rem",
-              letterSpacing: "2px",
-              mb: 1,
-              display: "block",
-            }}
-          >
-            CONHEÇA-ME MELHOR
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2rem", md: "3rem" },
-              fontWeight: 800,
-              mb: 2,
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)"
-                  : "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Sobre Mim
-          </Typography>
-        </Box>
+        <SectionHeading overline="CONHEÇA-ME MELHOR" title="Sobre Mim" />
 
         {/* Hero Section - Profile & Intro */}
         <Box
@@ -145,15 +116,7 @@ export const About: React.FC = () => {
             mb: 10,
             p: { xs: 3, md: 5 },
             borderRadius: 4,
-            background:
-              theme.palette.mode === "dark"
-                ? "rgba(30, 41, 59, 0.5)"
-                : "rgba(255, 255, 255, 0.8)",
-            border: `1px solid ${
-              theme.palette.mode === "dark"
-                ? "rgba(148, 163, 184, 0.1)"
-                : "rgba(203, 213, 225, 0.5)"
-            }`,
+            ...surface(theme, { light: 0.8 }),
             backdropFilter: "blur(10px)",
           }}
         >
@@ -161,11 +124,7 @@ export const About: React.FC = () => {
           <Box
             sx={{
               position: "relative",
-              animation: "fadeInLeft 0.8s ease-out",
-              "@keyframes fadeInLeft": {
-                from: { opacity: 0, transform: "translateX(-30px)" },
-                to: { opacity: 1, transform: "translateX(0)" },
-              },
+              ...fadeIn({ direction: "left", duration: 0.8 }),
             }}
           >
             <Box
@@ -173,14 +132,10 @@ export const About: React.FC = () => {
                 position: "absolute",
                 inset: -8,
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: BRAND_GRADIENT,
                 opacity: 0.3,
                 filter: "blur(20px)",
-                animation: "pulse 3s ease-in-out infinite",
-                "@keyframes pulse": {
-                  "0%, 100%": { opacity: 0.3 },
-                  "50%": { opacity: 0.5 },
-                },
+                ...pulse({ base: 0.3, peak: 0.5, duration: 3 }),
               }}
             />
             <Avatar
@@ -210,11 +165,7 @@ export const About: React.FC = () => {
             sx={{
               flex: 1,
               textAlign: { xs: "center", md: "left" },
-              animation: "fadeInRight 0.8s ease-out 0.2s both",
-              "@keyframes fadeInRight": {
-                from: { opacity: 0, transform: "translateX(30px)" },
-                to: { opacity: 1, transform: "translateX(0)" },
-              },
+              ...fadeIn({ direction: "right", duration: 0.8, delay: 0.2 }),
             }}
           >
             <Typography
@@ -294,17 +245,7 @@ export const About: React.FC = () => {
 
         {/* Timeline Section */}
         <Box sx={{ mb: 10 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              mb: 4,
-              textAlign: "center",
-              color: theme.palette.text.primary,
-            }}
-          >
-            Trajetória Profissional
-          </Typography>
+          <SubsectionHeading>Trajetória Profissional</SubsectionHeading>
           <Box sx={{ position: "relative" }}>
             {/* Timeline Line */}
             <Box
@@ -332,11 +273,7 @@ export const About: React.FC = () => {
                   justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
                   mb: 4,
                   position: "relative",
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.2}s both`,
-                  "@keyframes fadeInUp": {
-                    from: { opacity: 0, transform: "translateY(30px)" },
-                    to: { opacity: 1, transform: "translateY(0)" },
-                  },
+                  ...fadeIn({ delay: index * 0.2 }),
                 }}
               >
                 {/* Timeline Dot */}
@@ -363,13 +300,9 @@ export const About: React.FC = () => {
                   sx={{
                     width: { xs: "calc(100% - 60px)", md: "45%" },
                     ml: { xs: 7, md: 0 },
-                    background:
-                      theme.palette.mode === "dark"
-                        ? "rgba(30, 41, 59, 0.6)"
-                        : "rgba(255, 255, 255, 0.9)",
-                    border: `1px solid ${
-                      hoveredExp === index ? exp.color : "transparent"
-                    }`,
+                    ...surface(theme, { dark: 0.6 }),
+                    borderColor:
+                      hoveredExp === index ? exp.color : "transparent",
                     transition: "all 0.3s ease",
                     transform:
                       hoveredExp === index ? "translateY(-4px)" : "translateY(0)",
@@ -431,25 +364,13 @@ export const About: React.FC = () => {
 
         {/* Skills Section */}
         <Box sx={{ mb: 10 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              mb: 5,
-              textAlign: "center",
-              color: theme.palette.text.primary,
-            }}
-          >
+          <SubsectionHeading sx={{ mb: 5 }}>
             Níveis de Proficiência
-          </Typography>
+          </SubsectionHeading>
           <Grid container spacing={3}>
             {skills.map((skill, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Box
-                  sx={{
-                    animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-                  }}
-                >
+                <Box sx={fadeIn({ delay: index * 0.1 })}>
                   <Box
                     sx={{
                       display: "flex",
@@ -476,10 +397,7 @@ export const About: React.FC = () => {
                     sx={{
                       height: 8,
                       borderRadius: 4,
-                      background:
-                        theme.palette.mode === "dark"
-                          ? "rgba(148, 163, 184, 0.1)"
-                          : "rgba(203, 213, 225, 0.5)",
+                      background: subtleBorderColor(theme),
                       "& .MuiLinearProgress-bar": {
                         borderRadius: 4,
                         background:
@@ -495,17 +413,7 @@ export const About: React.FC = () => {
 
         {/* Interests Section */}
         <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              mb: 4,
-              textAlign: "center",
-              color: theme.palette.text.primary,
-            }}
-          >
-            O que me motiva
-          </Typography>
+          <SubsectionHeading>O que me motiva</SubsectionHeading>
           <Box
             sx={{
               display: "grid",
@@ -523,17 +431,9 @@ export const About: React.FC = () => {
                   textAlign: "center",
                   p: 3,
                   borderRadius: 3,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(30, 41, 59, 0.5)"
-                      : "rgba(255, 255, 255, 0.8)",
-                  border: `1px solid ${
-                    theme.palette.mode === "dark"
-                      ? "rgba(148, 163, 184, 0.1)"
-                      : "rgba(203, 213, 225, 0.5)"
-                  }`,
+                  ...surface(theme, { light: 0.8 }),
                   transition: "all 0.3s ease",
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.15}s both`,
+                  ...fadeIn({ delay: index * 0.15 }),
                   "&:hover": {
                     transform: "translateY(-8px)",
                     borderColor: interest.color,

@@ -9,6 +9,7 @@ import {
   alpha,
 } from "@mui/material";
 import { GitHub, LaunchOutlined } from "@mui/icons-material";
+import { BRAND_GRADIENT, gradientButton, surface } from "../../theme/styles";
 
 interface ProjectProps {
   title: string;
@@ -39,15 +40,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
         height: "100%",
         borderRadius: 4,
         overflow: "hidden",
-        background:
-          theme.palette.mode === "dark"
-            ? "rgba(30, 41, 59, 0.5)"
-            : "rgba(255, 255, 255, 0.9)",
-        border: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(148, 163, 184, 0.1)"
-            : "rgba(203, 213, 225, 0.5)"
-        }`,
+        ...surface(theme),
         transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         transform: isHovered ? "translateY(-8px)" : "translateY(0)",
         boxShadow: isHovered
@@ -66,7 +59,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
           width: "100%",
           height: 220,
           overflow: "hidden",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: BRAND_GRADIENT,
         }}
       >
         <Box
@@ -162,10 +155,10 @@ export const ProjectCard: React.FC<ProjectProps> = ({
               label={tag}
               size="small"
               sx={{
-                background:
-                  theme.palette.mode === "dark"
-                    ? alpha(theme.palette.primary.main, 0.1)
-                    : alpha(theme.palette.primary.main, 0.08),
+                background: alpha(
+                  theme.palette.primary.main,
+                  theme.palette.mode === "dark" ? 0.1 : 0.08
+                ),
                 color: theme.palette.primary.main,
                 fontWeight: 600,
                 fontSize: "0.75rem",
@@ -183,18 +176,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            sx={{
-              flex: 1,
-              textTransform: "none",
-              fontWeight: 600,
-              borderRadius: 2,
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-2px)",
-                boxShadow: "0 8px 20px rgba(102, 126, 234, 0.4)",
-              },
-            }}
+            sx={{ flex: 1, ...gradientButton }}
           >
             Ver Código
           </Button>
