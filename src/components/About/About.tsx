@@ -67,9 +67,12 @@ const interests = [
   { icon: <Favorite />, label: "Open Source", color: "#ec4899" },
 ];
 
+const PROFILE_IMAGE = "/assets/images/profile.jpg";
+
 export const About: React.FC = () => {
   const theme = useTheme();
   const [hoveredExp, setHoveredExp] = useState<number | null>(null);
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
   return (
     <Box
@@ -184,7 +187,7 @@ export const About: React.FC = () => {
               }}
             />
             <Avatar
-              src="/assets/images/profile.jpg"
+              src={avatarFailed ? undefined : PROFILE_IMAGE}
               alt="Gabriel Palhares"
               sx={{
                 width: { xs: 160, md: 200 },
@@ -196,9 +199,12 @@ export const About: React.FC = () => {
                 }`,
                 position: "relative",
               }}
-              onError={(e) => {
+              onError={() => {
                 // Fallback com iniciais
-                (e.target as HTMLImageElement).src = "";
+                console.warn(
+                  `Não foi possível carregar a foto de perfil: ${PROFILE_IMAGE}`
+                );
+                setAvatarFailed(true);
               }}
             >
               GP

@@ -29,6 +29,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
 }) => {
   const theme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
 
   return (
     <Box
@@ -69,22 +70,27 @@ export const ProjectCard: React.FC<ProjectProps> = ({
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         }}
       >
-        <Box
-          component="img"
-          src={image}
-          alt={title}
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            transition: "transform 0.4s ease",
-            transform: isHovered ? "scale(1.1)" : "scale(1)",
-          }}
-          onError={(e) => {
-            // Fallback se imagem não carregar
-            (e.target as HTMLImageElement).style.display = "none";
-          }}
-        />
+        {!imageFailed && (
+          <Box
+            component="img"
+            src={image}
+            alt={title}
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transition: "transform 0.4s ease",
+              transform: isHovered ? "scale(1.1)" : "scale(1)",
+            }}
+            onError={() => {
+              // Fallback (gradiente de fundo) se a imagem não carregar
+              console.warn(
+                `Não foi possível carregar a imagem do projeto "${title}": ${image}`
+              );
+              setImageFailed(true);
+            }}
+          />
+        )}
         
         {/* Overlay */}
         <Box
