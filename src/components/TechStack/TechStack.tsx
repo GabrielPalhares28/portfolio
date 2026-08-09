@@ -16,6 +16,16 @@ import {
   SiDocker,
 } from "react-icons/si";
 import { Code, Storage, Build } from "@mui/icons-material";
+import { DecorativeBlob } from "../common/DecorativeBlob";
+import { HighlightPanel } from "../common/HighlightPanel";
+import { SectionHeading } from "../common/SectionHeading";
+import {
+  SURFACE_COLORS,
+  fadeIn,
+  sectionGradient,
+  subtleBorderColor,
+  surface,
+} from "../../theme/styles";
 
 // Organização por categorias
 const skillCategories = [
@@ -65,92 +75,36 @@ export const TechStack: React.FC = () => {
       sx={{
         py: { xs: 8, md: 12 },
         position: "relative",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)"
-            : "linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%)",
+        background: sectionGradient(theme, {
+          dark: [
+            SURFACE_COLORS.darkDeep,
+            SURFACE_COLORS.darkSoft,
+            SURFACE_COLORS.darkDeep,
+          ],
+          light: [
+            SURFACE_COLORS.lightPlain,
+            SURFACE_COLORS.lightSoft,
+            SURFACE_COLORS.lightPlain,
+          ],
+        }),
       }}
     >
       {/* Background Decoration */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "20%",
-          right: "10%",
-          width: "300px",
-          height: "300px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(60px)",
-          pointerEvents: "none",
-        }}
-      />
+      <DecorativeBlob size="300px" sx={{ top: "20%", right: "10%" }} />
 
       <Container maxWidth="lg">
-        {/* Header */}
-        <Box
-          sx={{
-            textAlign: "center",
-            mb: 8,
-          }}
-        >
-          <Typography
-            variant="overline"
-            sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 700,
-              fontSize: "0.875rem",
-              letterSpacing: "2px",
-              mb: 1,
-              display: "block",
-            }}
-          >
-            TECH STACK
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2rem", md: "3rem" },
-              fontWeight: 800,
-              mb: 2,
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)"
-                  : "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Habilidades Técnicas
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.secondary,
-              maxWidth: "600px",
-              mx: "auto",
-              fontSize: { xs: "1rem", md: "1.125rem" },
-            }}
-          >
-            Tecnologias e ferramentas que domino para criar soluções completas
-          </Typography>
-        </Box>
+        <SectionHeading
+          overline="TECH STACK"
+          title="Habilidades Técnicas"
+          subtitle="Tecnologias e ferramentas que domino para criar soluções completas"
+        />
 
         {/* Skills by Category */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {skillCategories.map((category, categoryIndex) => (
             <Box
               key={categoryIndex}
-              sx={{
-                animation: `fadeInUp 0.6s ease-out ${categoryIndex * 0.2}s both`,
-                "@keyframes fadeInUp": {
-                  from: { opacity: 0, transform: "translateY(30px)" },
-                  to: { opacity: 1, transform: "translateY(0)" },
-                },
-              }}
+              sx={fadeIn({ delay: categoryIndex * 0.2 })}
             >
               {/* Category Header */}
               <Box
@@ -183,13 +137,7 @@ export const TechStack: React.FC = () => {
                 </Box>
                 <Typography
                   variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                    color:
-                      theme.palette.mode === "dark"
-                        ? theme.palette.text.primary
-                        : theme.palette.text.primary,
-                  }}
+                  sx={{ fontWeight: 700, color: theme.palette.text.primary }}
                 >
                   {category.title}
                 </Typography>
@@ -215,17 +163,11 @@ export const TechStack: React.FC = () => {
                     onMouseLeave={() => setHoveredSkill(null)}
                     sx={{
                       position: "relative",
-                      background:
-                        theme.palette.mode === "dark"
-                          ? "rgba(30, 41, 59, 0.5)"
-                          : "rgba(255, 255, 255, 0.8)",
-                      border: `1px solid`,
+                      ...surface(theme, { light: 0.8 }),
                       borderColor:
                         hoveredSkill === skill.name
                           ? skill.color
-                          : theme.palette.mode === "dark"
-                          ? "rgba(148, 163, 184, 0.1)"
-                          : "rgba(203, 213, 225, 0.5)",
+                          : subtleBorderColor(theme),
                       borderRadius: 3,
                       p: 3,
                       textAlign: "center",
@@ -281,10 +223,7 @@ export const TechStack: React.FC = () => {
                       sx={{
                         fontWeight: 600,
                         mb: 0.5,
-                        color:
-                          theme.palette.mode === "dark"
-                            ? theme.palette.text.primary
-                            : theme.palette.text.primary,
+                        color: theme.palette.text.primary,
                       }}
                     >
                       {skill.name}
@@ -313,19 +252,7 @@ export const TechStack: React.FC = () => {
         </Box>
 
         {/* Bottom CTA */}
-        <Box
-          sx={{
-            mt: 8,
-            textAlign: "center",
-            p: 4,
-            borderRadius: 3,
-            background:
-              theme.palette.mode === "dark"
-                ? alpha(theme.palette.primary.main, 0.05)
-                : alpha(theme.palette.primary.main, 0.03),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-          }}
-        >
+        <HighlightPanel sx={{ mt: 8 }}>
           <Typography
             variant="h6"
             sx={{
@@ -344,7 +271,7 @@ export const TechStack: React.FC = () => {
           >
             Atualmente estudando arquitetura de microsserviços e cloud computing
           </Typography>
-        </Box>
+        </HighlightPanel>
       </Container>
     </Box>
   );

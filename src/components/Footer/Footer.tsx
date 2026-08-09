@@ -5,85 +5,36 @@ import {
   IconButton,
   Container,
   useTheme,
-  alpha,
   Divider,
   Link,
 } from "@mui/material";
+import { FavoriteBorder, KeyboardArrowUp } from "@mui/icons-material";
+import { navItems } from "../../data/navigation";
+import { GITHUB_PROFILE_URL, socialLinks } from "../../data/social";
 import {
-  GitHub,
-  LinkedIn,
-  Email,
-  WhatsApp,
-  FavoriteBorder,
-  KeyboardArrowUp,
-} from "@mui/icons-material";
-
-const socialLinks = [
-  {
-    icon: <GitHub />,
-    href: "https://github.com/GabrielPalhares28",
-    label: "GitHub",
-    color: "#333",
-  },
-  {
-    icon: <LinkedIn />,
-    href: "https://www.linkedin.com/in/gabriel-palhares94bb30204",
-    label: "LinkedIn",
-    color: "#0077b5",
-  },
-  {
-    icon: <Email />,
-    href: "mailto:gabrielpalhares764@gmail.com",
-    label: "Email",
-    color: "#ea4335",
-  },
-  {
-    icon: <WhatsApp />,
-    href: "https://wa.me/5564992980763",
-    label: "WhatsApp",
-    color: "#25d366",
-  },
-];
-
-const quickLinks = [
-  { label: "Início", id: "hero" },
-  { label: "Tech Stack", id: "techstack" },
-  { label: "Projetos", id: "projects" },
-  { label: "Sobre", id: "about" },
-  { label: "Contato", id: "contact" },
-];
+  BRAND_GRADIENT,
+  SURFACE_COLORS,
+  accentIconButton,
+  brandGradientText,
+  fadeIn,
+  sectionGradient,
+  subtleBorderColor,
+} from "../../theme/styles";
+import { scrollToSection, scrollToTop } from "../../utils/scroll";
 
 export const Footer: React.FC = () => {
   const theme = useTheme();
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <Box
       component="footer"
       sx={{
         position: "relative",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)"
-            : "linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)",
-        borderTop: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(148, 163, 184, 0.1)"
-            : "rgba(203, 213, 225, 0.5)"
-        }`,
+        background: sectionGradient(theme, {
+          dark: [SURFACE_COLORS.darkSoft, SURFACE_COLORS.darkDeep],
+          light: [SURFACE_COLORS.lightSoft, SURFACE_COLORS.lightMuted],
+        }),
+        borderTop: `1px solid ${subtleBorderColor(theme)}`,
       }}
     >
       {/* Wave Decoration */}
@@ -130,9 +81,7 @@ export const Footer: React.FC = () => {
                 sx={{
                   fontWeight: 800,
                   mb: 1.5,
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  ...brandGradientText,
                   letterSpacing: "-0.5px",
                 }}
               >
@@ -201,9 +150,9 @@ export const Footer: React.FC = () => {
               >
                 Navegação Rápida
               </Typography>
-              {quickLinks.map((link, index) => (
+              {navItems.map((link) => (
                 <Link
-                  key={index}
+                  key={link.id}
                   onClick={() => scrollToSection(link.id)}
                   sx={{
                     color: theme.palette.text.secondary,
@@ -246,27 +195,18 @@ export const Footer: React.FC = () => {
                   gap: 1.5,
                 }}
               >
-                {socialLinks.map((social, index) => (
+                {socialLinks.map((social) => (
                   <IconButton
-                    key={index}
+                    key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    sx={{
-                      background:
-                        theme.palette.mode === "dark"
-                          ? alpha(social.color, 0.1)
-                          : alpha(social.color, 0.08),
-                      border: `1px solid ${alpha(social.color, 0.2)}`,
-                      color: social.color,
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        background: alpha(social.color, 0.2),
-                        transform: "translateY(-4px)",
-                        boxShadow: `0 4px 20px ${alpha(social.color, 0.4)}`,
-                      },
-                    }}
+                    sx={accentIconButton(social.color, theme.palette.mode, {
+                      lift: 4,
+                      glow: true,
+                      tintIcon: true,
+                    })}
                   >
                     {social.icon}
                   </IconButton>
@@ -275,15 +215,7 @@ export const Footer: React.FC = () => {
             </Box>
           </Box>
 
-          <Divider
-            sx={{
-              my: 3,
-              borderColor:
-                theme.palette.mode === "dark"
-                  ? "rgba(148, 163, 184, 0.1)"
-                  : "rgba(203, 213, 225, 0.5)",
-            }}
-          />
+          <Divider sx={{ my: 3, borderColor: subtleBorderColor(theme) }} />
 
           {/* Bottom Section */}
           <Box
@@ -326,14 +258,11 @@ export const Footer: React.FC = () => {
                 sx={{
                   width: 1,
                   height: 16,
-                  background:
-                    theme.palette.mode === "dark"
-                      ? "rgba(148, 163, 184, 0.2)"
-                      : "rgba(203, 213, 225, 0.5)",
+                  background: subtleBorderColor(theme),
                 }}
               />
               <Link
-                href="https://github.com/GabrielPalhares28"
+                href={GITHUB_PROFILE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
@@ -360,7 +289,7 @@ export const Footer: React.FC = () => {
           position: "fixed",
           bottom: 24,
           right: 24,
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: BRAND_GRADIENT,
           color: "#fff",
           width: 48,
           height: 48,
@@ -371,11 +300,7 @@ export const Footer: React.FC = () => {
             transform: "translateY(-4px)",
             boxShadow: "0 6px 30px rgba(102, 126, 234, 0.6)",
           },
-          animation: "fadeIn 0.5s ease",
-          "@keyframes fadeIn": {
-            from: { opacity: 0, transform: "translateY(20px)" },
-            to: { opacity: 1, transform: "translateY(0)" },
-          },
+          ...fadeIn({ distance: 20, duration: 0.5 }),
         }}
         aria-label="Voltar ao topo"
       >

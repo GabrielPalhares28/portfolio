@@ -1,20 +1,16 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Container,
-  useTheme,
-  alpha,
-  Grid,
-  Button,
-} from "@mui/material";
+import React from "react";
+import { Box, Typography, Container, useTheme, Grid, Button } from "@mui/material";
 import { GitHub } from "@mui/icons-material";
 import { ProjectCard } from "./ProjectCard";
 import { projects } from "../../data/projects";
+import { DecorativeBlob } from "../common/DecorativeBlob";
+import { HighlightPanel } from "../common/HighlightPanel";
+import { SectionHeading } from "../common/SectionHeading";
+import { SURFACE_COLORS, fadeIn, sectionGradient } from "../../theme/styles";
+import { GITHUB_PROFILE_URL } from "../../data/social";
 
 export const Projects: React.FC = () => {
   const theme = useTheme();
-  const [] = useState<number | null>(null);
 
   return (
     <Box
@@ -23,89 +19,32 @@ export const Projects: React.FC = () => {
         py: { xs: 8, md: 12 },
         position: "relative",
         overflow: "hidden",
-        background:
-          theme.palette.mode === "dark"
-            ? "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)"
-            : "linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)",
+        background: sectionGradient(theme, {
+          dark: [SURFACE_COLORS.darkDeep, SURFACE_COLORS.darkSoft],
+          light: [SURFACE_COLORS.lightSoft, SURFACE_COLORS.lightPlain],
+        }),
       }}
     >
       {/* Background Decoration */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: "10%",
-          left: "-5%",
-          width: "400px",
-          height: "400px",
-          background:
-            theme.palette.mode === "dark"
-              ? "radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(80px)",
-          pointerEvents: "none",
-        }}
+      <DecorativeBlob
+        size="400px"
+        color="139, 92, 246"
+        blur={80}
+        sx={{ top: "10%", left: "-5%" }}
       />
 
       <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Typography
-            variant="overline"
-            sx={{
-              color: theme.palette.primary.main,
-              fontWeight: 700,
-              fontSize: "0.875rem",
-              letterSpacing: "2px",
-              mb: 1,
-              display: "block",
-            }}
-          >
-            PORTFÓLIO
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: { xs: "2rem", md: "3rem" },
-              fontWeight: 800,
-              mb: 2,
-              background:
-                theme.palette.mode === "dark"
-                  ? "linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%)"
-                  : "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Projetos em Destaque
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: theme.palette.text.secondary,
-              maxWidth: "600px",
-              mx: "auto",
-              fontSize: { xs: "1rem", md: "1.125rem" },
-            }}
-          >
-            Alguns dos trabalhos que desenvolvi e que demonstram minhas habilidades
-          </Typography>
-        </Box>
+        <SectionHeading
+          overline="PORTFÓLIO"
+          title="Projetos em Destaque"
+          subtitle="Alguns dos trabalhos que desenvolvi e que demonstram minhas habilidades"
+        />
 
         {/* Projects Grid */}
         <Grid container spacing={4}>
           {projects.map((project, index) => (
             <Grid item xs={12} sm={6} lg={4} key={index}>
-              <Box
-                sx={{
-                  height: "100%",
-                  animation: `fadeInUp 0.6s ease-out ${index * 0.15}s both`,
-                  "@keyframes fadeInUp": {
-                    from: { opacity: 0, transform: "translateY(30px)" },
-                    to: { opacity: 1, transform: "translateY(0)" },
-                  },
-                }}
-              >
+              <Box sx={{ height: "100%", ...fadeIn({ delay: index * 0.15 }) }}>
                 <ProjectCard {...project} />
               </Box>
             </Grid>
@@ -113,19 +52,7 @@ export const Projects: React.FC = () => {
         </Grid>
 
         {/* CTA Bottom */}
-        <Box
-          sx={{
-            mt: 8,
-            textAlign: "center",
-            p: 4,
-            borderRadius: 3,
-            background:
-              theme.palette.mode === "dark"
-                ? alpha(theme.palette.primary.main, 0.05)
-                : alpha(theme.palette.primary.main, 0.03),
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-          }}
-        >
+        <HighlightPanel sx={{ mt: 8 }}>
           <Typography
             variant="h6"
             sx={{
@@ -148,7 +75,7 @@ export const Projects: React.FC = () => {
           <Button
             variant="outlined"
             startIcon={<GitHub />}
-            href="https://github.com/GabrielPalhares28"
+            href={GITHUB_PROFILE_URL}
             target="_blank"
             sx={{
               textTransform: "none",
@@ -162,7 +89,7 @@ export const Projects: React.FC = () => {
           >
             Visitar GitHub
           </Button>
-        </Box>
+        </HighlightPanel>
       </Container>
     </Box>
   );

@@ -1,47 +1,28 @@
 import { createTheme } from "@mui/material/styles";
+import type { PaletteMode, PaletteOptions } from "@mui/material";
 
-export const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#2563eb",
-    },
-    secondary: {
-      main: "#7c3aed",
-    },
-    background: {
-      default: "#f8fafc",
-      paper: "#ffffff",
-    },
-    text: {
-      primary: "#1e293b",
-      secondary: "#64748b",
-    },
+const palettes: Record<PaletteMode, PaletteOptions> = {
+  light: {
+    primary: { main: "#2563eb" },
+    secondary: { main: "#7c3aed" },
+    background: { default: "#f8fafc", paper: "#ffffff" },
+    text: { primary: "#1e293b", secondary: "#64748b" },
   },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  dark: {
+    primary: { main: "#3b82f6" },
+    secondary: { main: "#8b5cf6" },
+    background: { default: "#0f172a", paper: "#1e293b" },
+    text: { primary: "#f1f5f9", secondary: "#94a3b8" },
   },
-});
+};
 
-export const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#3b82f6",
+export const createAppTheme = (mode: PaletteMode) =>
+  createTheme({
+    palette: { mode, ...palettes[mode] },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     },
-    secondary: {
-      main: "#8b5cf6",
-    },
-    background: {
-      default: "#0f172a",
-      paper: "#1e293b",
-    },
-    text: {
-      primary: "#f1f5f9",
-      secondary: "#94a3b8",
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
+  });
+
+export const lightTheme = createAppTheme("light");
+export const darkTheme = createAppTheme("dark");
