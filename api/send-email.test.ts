@@ -78,12 +78,29 @@ describe('send-email handler', () => {
     process.env.EMAIL_TO = 'inbox@example.com';
   });
 
-  it('sets CORS headers on every request', async () => {
+  it('sets CORS headers without exposing a wildcard origin', async () => {
     const res = await call(createRequest());
 
-    expect(res.headers['Access-Control-Allow-Origin']).toBe('*');
-    expect(res.headers['Access-Control-Allow-Methods']).toBe('GET,OPTIONS,POST');
-    expect(res.headers['Access-Control-Allow-Credentials']).toBe('true');
+    expect(res.headers['Access-Control-Allow-Origin']).toBeUndefined();
+    expect(res.headers['Access-Control-Allow-Methods']).toBe('OPTIONS,POST');
+    expect(res.headers['Access-Control-Allow-Credentials']).toBeUndefined();
+  });
+
+  it('echoes only allowlisted origins back to the browser', async () => {
+    process.env.ALLOWED_ORIGINS = 'https://allowed.example, https://other.example';
+
+    const allowed = await call(
+      createRequest({ headers: { origin: 'https://allowed.example' } }),
+    );
+    expect(allowed.headers['Access-Control-Allow-Origin']).toBe('https://allowed.example');
+    expect(allowed.headers['Vary']).toBe('Origin');
+
+    const denied = await call(
+      createRequest({ headers: { origin: 'https://evil.example' } }),
+    );
+    expect(denied.headers['Access-Control-Allow-Origin']).toBeUndefined();
+
+    delete process.env.ALLOWED_ORIGINS;
   });
 
   it('answers preflight requests with 200 and no body', async () => {
@@ -207,22 +224,39 @@ describe('send-email handler', () => {
     }
   });
 
-  it('uses the first value when x-forwarded-for carries a list', async () => {
+  it('keys the rate limit on the rightmost forwarded hop, ignoring client spoofed prefixes', async () => {
     const handler = await loadHandler();
-    const send = async () => {
+    const send = async (headers: VercelRequest['headers']) => {
       const res = createResponse();
-      await handler(
-        createRequest({ headers: { 'x-forwarded-for': ['9.9.9.9', '8.8.8.8'] } }),
-        res as unknown as VercelResponse
-      );
+      await handler(createRequest({ headers }), res as unknown as VercelResponse);
       return res;
     };
 
     const responses: TestResponse[] = [];
     for (let attempt = 0; attempt < 4; attempt += 1) {
-      responses.push(await send());
+      // O cliente varia o prefixo forjado, mas o último hop é sempre o mesmo.
+      responses.push(await send({ 'x-forwarded-for': [`9.9.9.${attempt}`, '8.8.8.8'] }));
     }
 
     expect(responses.map((res) => res.statusCode)).toEqual([200, 200, 200, 429]);
+  });
+
+  it('escapes HTML in the notification email', async () => {
+    await call(
+      createRequest({
+        body: {
+          name: '<img src=x onerror=alert(1)>',
+          email: 'gabriel@example.com',
+          subject: 'Contato\r\nBcc: evil@example.com',
+          message: '<a href="https://evil.example">clique aqui</a> mensagem longa',
+        },
+      })
+    );
+
+    const mailOptions = sendMail.mock.calls[0][0];
+    expect(mailOptions.html).not.toContain('<img');
+    expect(mailOptions.html).not.toContain('<a href="https://evil.example"');
+    expect(mailOptions.html).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    expect(mailOptions.subject).toBe('[Portfólio] Contato Bcc: evil@example.com');
   });
 });
