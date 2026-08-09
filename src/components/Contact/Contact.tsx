@@ -24,6 +24,37 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 
+const REQUEST_TIMEOUT_MS = 15000;
+
+interface ApiFieldError {
+  field: string;
+  message: string;
+}
+
+interface ContactApiResponse {
+  success: boolean;
+  message?: string;
+  errors?: ApiFieldError[];
+}
+
+/** Erro para respostas HTTP 2xx que reportam falha no corpo. */
+class ApiResponseError extends Error {
+  readonly fieldErrors?: ApiFieldError[];
+
+  constructor(message: string, fieldErrors?: ApiFieldError[]) {
+    super(message);
+    this.name = "ApiResponseError";
+    this.fieldErrors = fieldErrors;
+  }
+}
+
+/** Campos da API mapeados para os campos do formulário. */
+const apiFieldToFormField: Record<string, "user_name" | "user_email" | "message"> = {
+  name: "user_name",
+  email: "user_email",
+  message: "message",
+};
+
 const contactMethods = [
   {
     icon: <Email />,
@@ -120,6 +151,24 @@ export const Contact: React.FC = () => {
     }
   };
 
+  /** Reflete os erros de validação do servidor nos campos do formulário. */
+  const applyFieldErrors = (fieldErrors?: ApiFieldError[]) => {
+    if (!fieldErrors?.length) {
+      return;
+    }
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      fieldErrors.forEach(({ field, message }) => {
+        const formField = apiFieldToFormField[field];
+        if (formField) {
+          next[formField] = message;
+        }
+      });
+      return next;
+    });
+  };
+
   const sendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -141,36 +190,73 @@ export const Contact: React.FC = () => {
         message: formData.message,
       };
 
-      const response = await axios.post(`${apiUrl}/api/send-email`, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await axios.post<ContactApiResponse>(
+        `${apiUrl}/api/send-email`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: REQUEST_TIMEOUT_MS,
+        }
+      );
+
+      if (!response.data?.success) {
+        // Resposta 2xx sem sucesso: trata como falha em vez de ignorar.
+        throw new ApiResponseError(
+          response.data?.message ??
+            "A resposta do servidor não pôde ser interpretada.",
+          response.data?.errors
+        );
+      }
+
+      setSnackbar({
+        open: true,
+        message: response.data.message ?? "Mensagem enviada com sucesso! 🎉",
+        severity: "success",
       });
 
-      if (response.data.success) {
-        setSnackbar({
-          open: true,
-          message: "Mensagem enviada com sucesso! 🎉",
-          severity: "success",
-        });
-
-        // Limpa o formulário
-        setFormData({
-          user_name: "",
-          user_email: "",
-          message: "",
-        });
-      }
-    } catch (error: any) {
+      // Limpa o formulário
+      setFormData({
+        user_name: "",
+        user_email: "",
+        message: "",
+      });
+    } catch (error: unknown) {
       console.error('Erro ao enviar mensagem:', error);
 
       let errorMessage = "Erro ao enviar mensagem. Tente novamente! 😕";
+      let fieldErrors: ApiFieldError[] | undefined;
 
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.status === 429) {
-        errorMessage = "Muitas tentativas. Aguarde um momento e tente novamente.";
+      if (error instanceof ApiResponseError) {
+        errorMessage = error.message;
+        fieldErrors = error.fieldErrors;
+      } else if (axios.isAxiosError<ContactApiResponse>(error)) {
+        const status = error.response?.status;
+        const data = error.response?.data;
+        fieldErrors = data?.errors;
+
+        if (error.code === "ECONNABORTED" || error.code === "ETIMEDOUT") {
+          errorMessage =
+            "O servidor demorou para responder. Tente novamente em instantes.";
+        } else if (!error.response) {
+          errorMessage =
+            "Não foi possível conectar ao servidor. Verifique sua conexão.";
+        } else if (status === 429) {
+          errorMessage =
+            data?.message ??
+            "Muitas tentativas. Aguarde um momento e tente novamente.";
+        } else if (data?.message) {
+          errorMessage = data.message;
+        } else if (status && status >= 500) {
+          errorMessage =
+            "O servidor não conseguiu enviar sua mensagem. Tente novamente mais tarde.";
+        }
+      } else if (error instanceof Error && error.message) {
+        errorMessage = error.message;
       }
+
+      applyFieldErrors(fieldErrors);
 
       setSnackbar({
         open: true,

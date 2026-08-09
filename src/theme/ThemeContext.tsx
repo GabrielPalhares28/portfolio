@@ -2,6 +2,7 @@ import React, { createContext, useMemo, useState, useContext } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { lightTheme, darkTheme } from "./theme";
+import { readStorage, writeStorage } from "../utils/storage";
 
 interface ThemeContextType {
   toggleTheme: () => void;
@@ -18,14 +19,14 @@ export const useThemeContext = () => useContext(ThemeContext);
 export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mode, setMode] = useState<"light" | "dark">(
-    (localStorage.getItem("theme") as "light" | "dark") || "light"
+  const [mode, setMode] = useState<"light" | "dark">(() =>
+    readStorage("theme") === "dark" ? "dark" : "light"
   );
 
   const toggleTheme = () => {
     const newMode = mode === "light" ? "dark" : "light";
     setMode(newMode);
-    localStorage.setItem("theme", newMode);
+    writeStorage("theme", newMode);
   };
 
   const theme = useMemo(() => (mode === "light" ? lightTheme : darkTheme), [mode]);

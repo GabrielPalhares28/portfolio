@@ -9,12 +9,22 @@ import { Projects } from "./components/Projects/Projects";
 import { About } from "./components/About/About";
 import { Contact } from "./components/Contact/Contact";
 import { Footer } from "./components/Footer/Footer";
+import { readStorage, writeStorage } from "./utils/storage";
+
+const prefersDarkMode = (): boolean => {
+  try {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  } catch (error) {
+    console.warn("Não foi possível detectar o tema do sistema:", error);
+    return false;
+  }
+};
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<PaletteMode>(() => {
-    const savedMode = localStorage.getItem("themeMode") as PaletteMode | null;
+    const savedMode = readStorage("themeMode");
     if (savedMode === "light" || savedMode === "dark") return savedMode;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return prefersDarkMode() ? "dark" : "light";
   });
 
   const theme = mode === "light" ? lightTheme : darkTheme;
@@ -22,7 +32,7 @@ const App: React.FC = () => {
   const toggleTheme = () => {
     setMode((prevMode) => {
       const newMode = prevMode === "light" ? "dark" : "light";
-      localStorage.setItem("themeMode", newMode);
+      writeStorage("themeMode", newMode);
       return newMode;
     });
   };
