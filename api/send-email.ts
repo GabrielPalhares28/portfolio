@@ -10,10 +10,35 @@ const contactSchema = z.object({
   message: z.string().min(10, 'Mensagem deve ter no mínimo 10 caracteres').max(5000),
 });
 
+// Origens autorizadas a chamar a API
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Rate limiting simples (em memória)
 const rateLimit = new Map<string, number[]>();
 const MAX_REQUESTS = 3; // 3 mensagens
 const TIME_WINDOW = 60 * 60 * 1000; // por hora
+
+// Usa o IP mais à direita da cadeia de proxies: os anteriores podem ser forjados
+// pelo cliente através do header X-Forwarded-For.
+function getClientIp(req: VercelRequest): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  const chain = Array.isArray(forwarded) ? forwarded.join(',') : forwarded;
+  const hops = (chain ?? '').split(',').map((hop) => hop.trim()).filter(Boolean);
+
+  return hops[hops.length - 1] || req.socket?.remoteAddress || 'unknown';
+}
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -33,10 +58,13 @@ function checkRateLimit(ip: string): boolean {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS Headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'OPTIONS,POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   // Handle preflight
   if (req.method === 'OPTIONS') {
@@ -53,10 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // Rate limiting
-    const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
-    const ipString = Array.isArray(ip) ? ip[0] : ip;
-    
-    if (!checkRateLimit(ipString)) {
+    if (!checkRateLimit(getClientIp(req))) {
       return res.status(429).json({
         success: false,
         message: 'Muitas requisições. Tente novamente em 1 hora.',
@@ -66,6 +91,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validação dos dados
     const validatedData = contactSchema.parse(req.body);
     const { name, email, subject, message } = validatedData;
+    const safe = {
+      name: escapeHtml(name),
+      email: escapeHtml(email),
+      subject: escapeHtml(subject),
+      message: escapeHtml(message),
+    };
 
     // Configurar transporter (usando Gmail como exemplo)
     const transporter = nodemailer.createTransport({
@@ -81,7 +112,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_TO || process.env.EMAIL_USER,
       replyTo: email,
-      subject: `[Portfólio] ${subject}`,
+      subject: `[Portfólio] ${subject.replace(/[\r\n]+/g, ' ')}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -104,17 +135,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             </div>
             <div class="content">
               <div class="info">
-                <p><span class="label">👤 Nome:</span> ${name}</p>
+                <p><span class="label">👤 Nome:</span> ${safe.name}</p>
               </div>
               <div class="info">
-                <p><span class="label">📧 Email:</span> <a href="mailto:${email}">${email}</a></p>
+                <p><span class="label">📧 Email:</span> <a href="mailto:${safe.email}">${safe.email}</a></p>
               </div>
               <div class="info">
-                <p><span class="label">📝 Assunto:</span> ${subject}</p>
+                <p><span class="label">📝 Assunto:</span> ${safe.subject}</p>
               </div>
               <div class="message-box">
                 <p><span class="label">💬 Mensagem:</span></p>
-                <p style="white-space: pre-wrap;">${message}</p>
+                <p style="white-space: pre-wrap;">${safe.message}</p>
               </div>
               <div class="footer">
                 <p>Enviado em ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}</p>
