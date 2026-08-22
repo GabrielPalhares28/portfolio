@@ -161,17 +161,19 @@ export const Contact: React.FC = () => {
           message: "",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erro ao enviar mensagem:', error);
 
       let errorMessage = "Erro ao enviar mensagem. Tente novamente! 😕";
 
+      if (axios.isAxiosError(error)){
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.status === 429) {
         errorMessage = "Muitas tentativas. Aguarde um momento e tente novamente.";
       }
-
+    }
+    
       setSnackbar({
         open: true,
         message: errorMessage,

@@ -1,19 +1,11 @@
-import React, { createContext, useMemo, useState, useContext } from "react";
+import React, { useState, useMemo } from "react";
+import { ThemeContext } from "./useThemeContext";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { lightTheme, darkTheme } from "./theme";
 
-interface ThemeContextType {
-  toggleTheme: () => void;
-  mode: "light" | "dark";
-}
 
-const ThemeContext = createContext<ThemeContextType>({
-  toggleTheme: () => {},
-  mode: "light",
-});
 
-export const useThemeContext = () => useContext(ThemeContext);
 
 export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,

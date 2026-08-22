@@ -25,39 +25,39 @@ const experiences = [
   {
     year: "2024 - Atual",
     title: "Desenvolvedor Full Stack Freelancer",
-    company: "Workana",
+    //company: "Workana",
     description:
-      "Desenvolvimento de soluções completas integrando front-end e back-end, com foco em React, Node.js e bancos relacionais.",
+      "Desenvolvimento de aplicações web e soluções full stack, com foco em React, TypeScript, Node.js, APIs REST e bancos de dados relacionais.",
     icon: <Work />,
     color: "#667eea",
   },
   {
-    year: "2023 - 2024",
-    title: "Desenvolvedor Backend",
-    company: "Projetos Acadêmicos",
+    year: "2026 - Atual",
+    title: "Engenharia Full Stack JavaScript",
+    company: "Mate Academy",
     description:
-      "Desenvolvimento de sistemas como alocação de animais em zoológico e sistema de chamados com Java/Spring Boot.",
+      "Formação intensiva de 600 horas em desenvolvimento Full Stack, com JavaScript, TypeScript, React, Node.js, Express, PostgreSQL, testes automatizados e desenvolvimento de aplicações completas.",
     icon: <Code />,
     color: "#764ba2",
   },
   {
-    year: "2023 - Atual",
+    year: "Concluído",
     title: "Análise e Desenvolvimento de Sistemas",
     company: "Unicesumar",
     description:
-      "Graduação com foco em desenvolvimento de software, arquitetura de sistemas e boas práticas de programação.",
+      "Graduação em Análise e Desenvolvimento de Sistemas, com formação em desenvolvimento de software, bancos de dados, arquitetura de sistemas e engenharia de software.",
     icon: <School />,
     color: "#f59e0b",
   },
 ];
 
 const skills = [
-  { name: "React & TypeScript", level: 90 },
-  { name: "Node.js & Express", level: 85 },
-  { name: "Java & Spring Boot", level: 75 },
+  { name: "JavaScript & TypeScript", level: 100 },
+  { name: "React", level: 95 },
+  { name: "Node.js & Express", level: 90 },
   { name: "PostgreSQL & MySQL", level: 80 },
-  { name: "Git & DevOps", level: 85 },
-  { name: "UI/UX Design", level: 70 },
+  { name: "Git & GitHub", level: 70 },
+  { name: "Testes Automatizados", level: 70 },
 ];
 
 const interests = [
@@ -440,7 +440,7 @@ export const About: React.FC = () => {
               color: theme.palette.text.primary,
             }}
           >
-            Níveis de Proficiência
+            Foco Tecnológico Atual
           </Typography>
           <Grid container spacing={3}>
             {skills.map((skill, index) => (

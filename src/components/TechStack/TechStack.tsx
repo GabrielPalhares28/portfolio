@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, Container, useTheme, alpha, Chip } from "@mui/material";
+import { Box, Typography, Container, useTheme, alpha } from "@mui/material";
 import {
   SiReact,
   SiJavascript,
@@ -24,12 +24,12 @@ const skillCategories = [
     icon: <Code />,
     color: "#667eea",
     skills: [
-      { name: "React", icon: <SiReact />, color: "#61DAFB", level: "Avançado" },
-      { name: "TypeScript", icon: <SiTypescript />, color: "#3178C6", level: "Avançado" },
-      { name: "JavaScript", icon: <SiJavascript />, color: "#F7DF1E", level: "Avançado" },
-      { name: "Angular", icon: <SiAngular />, color: "#DD0031", level: "Intermediário" },
-      { name: "HTML5", icon: <SiHtml5 />, color: "#E34F26", level: "Avançado" },
-      { name: "CSS3", icon: <SiCss3 />, color: "#1572B6", level: "Avançado" },
+      { name: "React", icon: <SiReact />, color: "#61DAFB"},
+      { name: "TypeScript", icon: <SiTypescript />, color: "#3178C6"}, 
+      { name: "JavaScript", icon: <SiJavascript />, color: "#F7DF1E"},
+      { name: "Angular", icon: <SiAngular />, color: "#DD0031"},
+      { name: "HTML5", icon: <SiHtml5 />, color: "#E34F26"},
+      { name: "CSS3", icon: <SiCss3 />, color: "#1572B6"},
     ],
   },
   {
@@ -37,11 +37,11 @@ const skillCategories = [
     icon: <Storage />,
     color: "#764ba2",
     skills: [
-      { name: "Node.js", icon: <SiNodedotjs />, color: "#68A063", level: "Avançado" },
-      { name: "Java", icon: <SiOpenjdk />, color: "#E76F00", level: "Intermediário" },
-      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6DB33F", level: "Intermediário" },
-      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#336791", level: "Avançado" },
-      { name: "MySQL", icon: <SiMysql />, color: "#00758F", level: "Intermediário" },
+      { name: "Node.js", icon: <SiNodedotjs />, color: "#68A063"},
+      { name: "Java", icon: <SiOpenjdk />, color: "#E76F00"},
+      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6DB33F"},
+      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#336791"},
+      { name: "MySQL", icon: <SiMysql />, color: "#00758F"},
     ],
   },
   {
@@ -49,8 +49,8 @@ const skillCategories = [
     icon: <Build />,
     color: "#f59e0b",
     skills: [
-      { name: "Git", icon: <SiGit />, color: "#F05032", level: "Avançado" },
-      { name: "Docker", icon: <SiDocker />, color: "#0db7ed", level: "Intermediário" },
+      { name: "Git", icon: <SiGit />, color: "#F05032"},
+      { name: "Docker", icon: <SiDocker />, color: "#0db7ed"},
     ],
   },
 ];
@@ -290,21 +290,8 @@ export const TechStack: React.FC = () => {
                       {skill.name}
                     </Typography>
 
-                    {/* Level Badge */}
-                    <Chip
-                      label={skill.level}
-                      size="small"
-                      sx={{
-                        height: 20,
-                        fontSize: "0.7rem",
-                        fontWeight: 600,
-                        background: alpha(skill.color, 0.15),
-                        color: skill.color,
-                        border: `1px solid ${alpha(skill.color, 0.3)}`,
-                        opacity: hoveredSkill === skill.name ? 1 : 0.7,
-                        transition: "opacity 0.3s ease",
-                      }}
-                    />
+                    
+                      
                   </Box>
                 ))}
               </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -14,7 +14,7 @@ import { projects } from "../../data/projects";
 
 export const Projects: React.FC = () => {
   const theme = useTheme();
-  const [] = useState<number | null>(null);
+  
 
   return (
     <Box
