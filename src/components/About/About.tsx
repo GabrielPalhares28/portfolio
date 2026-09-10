@@ -237,7 +237,7 @@ export const About: React.FC = () => {
               }}
             >
               Desenvolvedor <strong>Full-Stack</strong> apaixonado por criar soluções digitais
-              que fazem diferença. Com experiência em <strong>React, Node.js, Java</strong> e
+              que fazem diferença. Com experiência em <strong>React, Node.js, TypeScript</strong> e
               bancos de dados relacionais, busco sempre entregar código limpo e sistemas
               escaláveis.
             </Typography>
@@ -249,46 +249,10 @@ export const About: React.FC = () => {
                 fontSize: "1.05rem",
               }}
             >
-              Formado em <strong>Análise e Desenvolvimento de Sistemas</strong> na
-              Unicesumar e atuo como Desenvolvedor Full Stack, onde desenvolvo projetos completos
-              do front ao back-end.
+              Formado em <strong>Análise e Desenvolvimento de Sistemas</strong> pela Unicesumar, desenvolvo projetos completos do front ao back-end, buscando transformar conhecimento técnico em soluções funcionais e bem estruturadas.
             </Typography>
 
-            {/* Quick Stats */}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 3,
-                mt: 4,
-                justifyContent: { xs: "center", md: "flex-start" },
-              }}
-            >
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: "#667eea" }}>
-                  2+
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Anos de Experiência
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: "#764ba2" }}>
-                  10+
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Projetos Concluídos
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: "#f59e0b" }}>
-                  100%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Dedicação
-                </Typography>
-              </Box>
-            </Box>
+            
           </Box>
         </Box>
 

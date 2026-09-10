@@ -6,13 +6,14 @@ export const projects = [
     image: "/assets/images/projects/auth-convenio.png",
     link: "https://github.com/GabrielPalhares28",
   },
-  /*{
-    title: "Sistema de Alocação de Animais em Zoológico",
-    description:
-      "Aplicação que gerencia alocação de animais considerando bioma, espaço e compatibilidade entre espécies.",
-    image: "/projects/zoo.jpg",
-    link: "https://github.com/GabrielPalhares28",
-  },n*/
+  {
+  title: "Fast Tracker",
+  description:
+    "Aplicativo mobile para acompanhamento de jejum intermitente, refeições e calorias, com persistência local, histórico semanal e suporte a tema claro/escuro.",
+  image: "/assets/images/projects/fast-tracker.png",
+  link: "https://github.com/GabrielPalhares28/mamba-fast-tracker",
+  tags: ["Flutter", "Dart"],
+},
   {
     title: "Portfólio Pessoal",
     description:

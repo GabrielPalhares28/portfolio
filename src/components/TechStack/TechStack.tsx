@@ -329,7 +329,7 @@ export const TechStack: React.FC = () => {
               color: theme.palette.text.secondary,
             }}
           >
-            Atualmente estudando arquitetura de microsserviços e cloud computing
+            Sempre explorando novas tecnologias e aprofundando meus conhecimentos em desenvolvimento Full Stack.
           </Typography>
         </Box>
       </Container>
