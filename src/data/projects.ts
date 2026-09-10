@@ -7,18 +7,19 @@ export const projects = [
     link: "https://github.com/GabrielPalhares28",
   },
   {
-  title: "Fast Tracker",
-  description:
-    "Aplicativo mobile para acompanhamento de jejum intermitente, refeições e calorias, com persistência local, histórico semanal e suporte a tema claro/escuro.",
-  image: "/assets/images/projects/fast-tracker.png",
-  link: "https://github.com/GabrielPalhares28/mamba-fast-tracker",
-  tags: ["Flutter", "Dart"],
-},
+    title: "Fast Tracker",
+    description:
+      "Aplicativo mobile para acompanhamento de jejum intermitente, refeições e calorias, com persistência local, histórico semanal e suporte a tema claro/escuro.",
+    image: "/assets/images/projects/fast-tracker.png",
+    link: "https://github.com/GabrielPalhares28/mamba-fast-tracker",
+    tags: ["Flutter", "Dart"],
+  },
   {
     title: "Portfólio Pessoal",
     description:
       "Portfólio desenvolvido para apresentar meus projetos, experiências e tecnologias, com design responsivo, tema claro/escuro e testes automatizados.",
     image: "/assets/images/projects/portfolio.png",
     link: "https://github.com/GabrielPalhares28/portfolio",
+    demoLink: "https://portfolio-nu-lac-78.vercel.app/",
   },
 ];
