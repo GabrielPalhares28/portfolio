@@ -39,16 +39,24 @@ describe('ProjectCard', () => {
     expect(screen.queryByText('React')).not.toBeInTheDocument();
   });
 
-  it('points both actions to the repository in a new tab', () => {
+  it('points the code action to the repository and hides demo when it is not provided', () => {
     render(<ProjectCard {...baseProps} />);
 
-    const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(2);
-    links.forEach((link) => {
-      expect(link).toHaveAttribute('href', baseProps.link);
-      expect(link).toHaveAttribute('target', '_blank');
-      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-    });
+    const codeLink = screen.getByRole('link', { name: /ver código/i });
+    expect(codeLink).toHaveAttribute('href', baseProps.link);
+    expect(codeLink).toHaveAttribute('target', '_blank');
+    expect(codeLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(screen.queryByRole('link', { name: /abrir demonstração/i })).not.toBeInTheDocument();
+  });
+
+  it('renders the demo action when demoLink is provided', () => {
+    const demoLink = 'https://example.com/demo';
+    render(<ProjectCard {...baseProps} demoLink={demoLink} />);
+
+    const demo = screen.getByRole('link', { name: `Abrir demonstração de ${baseProps.title}` });
+    expect(demo).toHaveAttribute('href', demoLink);
+    expect(demo).toHaveAttribute('target', '_blank');
+    expect(demo).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('hides the image when it fails to load', () => {
