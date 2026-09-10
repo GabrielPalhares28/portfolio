@@ -5,12 +5,16 @@ import axios from 'axios';
 import { Contact } from './Contact';
 
 vi.mock('axios', () => ({
-  default: { post: vi.fn() },
+  default: { post: vi.fn(),
+  isAxiosError: vi.fn(),
+   },
+  
 }));
 
 const post = vi.mocked(axios.post);
+const isAxiosError = vi.mocked(axios.isAxiosError);
 
-const fillForm = async (
+const fillForm =  (
   overrides: Partial<{ name: string; email: string; message: string }> = {}
 ) => {
   const values = {
@@ -20,9 +24,9 @@ const fillForm = async (
     ...overrides,
   };
 
-  await userEvent.type(screen.getByRole('textbox', { name: /nome completo/i }), values.name);
-  await userEvent.type(screen.getByRole('textbox', { name: /e-mail/i }), values.email);
-  await userEvent.type(screen.getByRole('textbox', { name: /mensagem/i }), values.message);
+  fireEvent.change(screen.getByRole('textbox', { name: /nome completo/i }), { target: { value: values.name } });
+  fireEvent.change(screen.getByRole('textbox', { name: /e-mail/i }), { target: { value: values.email } });
+  fireEvent.change(screen.getByRole('textbox', { name: /mensagem/i }), { target: { value: values.message } });
 };
 
 // Submitting the form element directly skips the browser level `required`
@@ -50,6 +54,7 @@ describe('Contact', () => {
   });
 
   it('shows validation errors for an empty form and does not call the API', async () => {
+    isAxiosError.mockReturnValue(true);
     render(<Contact />);
 
     await submit();
@@ -87,7 +92,7 @@ describe('Contact', () => {
     post.mockResolvedValue({ data: { success: true } });
     render(<Contact />);
 
-    await fillForm();
+   fillForm();
     await submit();
 
     await waitFor(() =>
@@ -119,7 +124,7 @@ describe('Contact', () => {
     );
     render(<Contact />);
 
-    await fillForm();
+   fillForm();
     await submit();
 
     const button = screen.getByRole('button', { name: /enviando/i });
@@ -136,7 +141,7 @@ describe('Contact', () => {
     post.mockRejectedValue({ response: { status: 429, data: { message: 'Muitas requisições.' } } });
     render(<Contact />);
 
-    await fillForm();
+    fillForm();
     await submit();
 
     expect(await screen.findByText('Muitas requisições.')).toBeInTheDocument();
@@ -149,7 +154,7 @@ describe('Contact', () => {
     post.mockRejectedValue(new Error('Network Error'));
     render(<Contact />);
 
-    await fillForm();
+    fillForm();
     await submit();
 
     expect(await screen.findByText(/erro ao enviar mensagem\. tente novamente/i)).toBeInTheDocument();
@@ -159,7 +164,7 @@ describe('Contact', () => {
     post.mockResolvedValue({ data: { success: true } });
     render(<Contact />);
 
-    await fillForm();
+    fillForm();
     await submit();
 
     const alert = await screen.findByRole('alert');

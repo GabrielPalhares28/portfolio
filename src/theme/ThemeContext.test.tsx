@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useTheme } from '@mui/material/styles';
-import { ThemeContextProvider, useThemeContext } from './ThemeContext';
+import { ThemeContextProvider } from './ThemeContext';
+import { useThemeContext } from './useThemeContext';
 
 const Probe = () => {
   const { mode, toggleTheme } = useThemeContext();
