@@ -15,6 +15,7 @@ interface ProjectProps {
   description: string;
   image: string;
   link: string;
+  demoLink?: string;
   tags?: string[];
   category?: string;
 }
@@ -24,6 +25,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
   description,
   image,
   link,
+  demoLink,
   tags = ["React", "TypeScript"],
   category = "Full Stack",
 }) => {
@@ -85,7 +87,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
             (e.target as HTMLImageElement).style.display = "none";
           }}
         />
-        
+
         {/* Overlay */}
         <Box
           sx={{
@@ -97,7 +99,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
             transition: "all 0.3s ease",
           }}
         />
-        
+
         {/* Category Badge */}
         <Chip
           label={category}
@@ -134,7 +136,7 @@ export const ProjectCard: React.FC<ProjectProps> = ({
         >
           {title}
         </Typography>
-        
+
         <Typography
           variant="body2"
           sx={{
@@ -198,23 +200,26 @@ export const ProjectCard: React.FC<ProjectProps> = ({
           >
             Ver Código
           </Button>
-          
-          <IconButton
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{
-              border: `2px solid ${theme.palette.primary.main}`,
-              color: theme.palette.primary.main,
-              transition: "all 0.3s ease",
-              "&:hover": {
-                background: alpha(theme.palette.primary.main, 0.1),
-                transform: "translateY(-2px)",
-              },
-            }}
-          >
-            <LaunchOutlined />
-          </IconButton>
+
+          {demoLink && (
+            <IconButton
+              href={demoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Abrir demonstração de ${title}`}
+              sx={{
+                border: `2px solid ${theme.palette.primary.main}`,
+                color: theme.palette.primary.main,
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  background: alpha(theme.palette.primary.main, 0.1),
+                  transform: "translateY(-2px)",
+                },
+              }}
+            >
+              <LaunchOutlined />
+            </IconButton>
+          )}
         </Box>
       </Box>
     </Box>
