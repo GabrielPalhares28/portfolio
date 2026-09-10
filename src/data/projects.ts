@@ -4,7 +4,8 @@ export const projects = [
     description:
       "Sistema de autenticação de convênios médicos com fluxos personalizados (Unimed com QR Code, Clinipam com biometria etc.).",
     image: "/assets/images/projects/auth-convenio.png",
-    link: "https://github.com/GabrielPalhares28",
+    link: "https://github.com/GabrielPalhares28/AuthConvenio",
+    demoLink: "https://auth-convenio.vercel.app/",
   },
   {
     title: "Fast Tracker",
@@ -13,6 +14,7 @@ export const projects = [
     image: "/assets/images/projects/fast-tracker.png",
     link: "https://github.com/GabrielPalhares28/mamba-fast-tracker",
     tags: ["Flutter", "Dart"],
+    category: "Mobile",
   },
   {
     title: "Portfólio Pessoal",
