@@ -33,7 +33,7 @@ describe('App', () => {
   it('renders every section of the page', () => {
     const { container } = render(<App />);
 
-    ['hero', 'techstack', 'projects', 'about', 'contact'].forEach((id) => {
+    ['hero', 'techstack', 'projects','certifications', 'about', 'contact'].forEach((id) => {
       expect(container.querySelector(`#${id}`)).toBeInTheDocument();
     });
     expect(container.querySelector('footer')).toBeInTheDocument();
