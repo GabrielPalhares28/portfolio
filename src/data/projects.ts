@@ -16,12 +16,14 @@ export const projects = [
     tags: ["Flutter", "Dart"],
     category: "Mobile",
   },
-  {
-    title: "Portfólio Pessoal",
-    description:
-      "Portfólio desenvolvido para apresentar meus projetos, experiências e tecnologias, com design responsivo, tema claro/escuro e testes automatizados.",
-    image: "/assets/images/projects/portfolio.png",
-    link: "https://github.com/GabrielPalhares28/portfolio",
-    demoLink: "https://portfolio-nu-lac-78.vercel.app/",
-  },
+ {
+  title: "Afterglow",
+  description:
+    "Gerenciador de tarefas desenvolvido com React e TypeScript, com filtros, prioridades, múltiplas visualizações, persistência local e temas claro/escuro.",
+  image: "/assets/images/projects/afterglow.png",
+  link: "https://github.com/GabrielPalhares28/Afterglow",
+  demoLink: "https://afterglow-sandy.vercel.app",
+  tags: ["React", "TypeScript"],
+  category: "Front-end",
+},
 ];
